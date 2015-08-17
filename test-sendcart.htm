@@ -1,0 +1,84 @@
+
+
+<!--TESTING POST -->
+<a href="http://memorialhelpers.com/cart/add" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var v = document.createElement('input'); v.setAttribute('type', 'hidden'); v.setAttribute('name', 'id'); v.setAttribute('value', '1114645461'); f.appendChild(v); var r = document.createElement('input'); r.setAttribute('type', 'hidden'); r.setAttribute('name', 'return_to'); r.setAttribute('value', 'back'); f.appendChild(r); f.submit(); return false;">Works1</a>
+
+
+<br>
+1114646077:1
+<br>
+<a href="http://memorialhelpers.com/cart/add" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var v = document.createElement('input'); v.setAttribute('type', 'hidden'); v.setAttribute('name', 'id'); v.setAttribute('value', '1114646077'); f.appendChild(v); var r = document.createElement('input'); r.setAttribute('type', 'hidden'); r.setAttribute('name', 'return_to'); r.setAttribute('value', 'back'); f.appendChild(r); f.submit(); return false;">Works2</a>
+<br>
+<a href="http://memorialhelpers.com/cart/add" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var v = document.createElement('input'); v.setAttribute('type', 'hidden'); v.setAttribute('name', 'id[]'); v.setAttribute('value', '1114646077,1114645461'); f.appendChild(v); var r = document.createElement('input'); r.setAttribute('type', 'hidden'); r.setAttribute('name', 'return_to'); r.setAttribute('value', 'back'); f.appendChild(r); f.submit(); return false;">broken multi</a>
+
+<br>
+<form action="http://memorialhelpers.com/cart/add" method="post">
+  <input type="hidden" name="id" value="1114646077" />
+  <input type="hidden" name="return_to" value="back" />
+  <input type="submit" value="test html only-works" />
+</form>
+
+
+<br>
+<form action="http://memorialhelpers.com/cart/add" method="post">
+  <input type="hidden" name="id[]" value="1114646077:1,1114645461:1" />
+  <input type="hidden" name="return_to" value="back" />
+  <input type="submit" value="test html multi-broken" />
+</form>
+
+<br>
+<a href="http://memorialhelpers.com/cart/add" onclick="
+
+var f = document.createElement('form'); 
+f.style.display = 'none'; 
+this.parentNode.appendChild(f); 
+f.method = 'POST'; 
+f.action = this.href; 
+
+var v = document.createElement('input'); 
+v.setAttribute('type', 'hidden'); 
+v.setAttribute('name', 'id'); 
+v.setAttribute('value', '1114646077'); 
+f.appendChild(v); 
+
+var r = document.createElement('input'); 
+r.setAttribute('type', 'hidden'); 
+r.setAttribute('name', 'return_to'); 
+r.setAttribute('value', 'back'); 
+f.appendChild(r); 
+f.submit(); 
+return false;
+">Works2</a>
+
+<br>
+<a href="http://memorialhelpers.com/cart/add" onclick="
+
+var f = document.createElement('form'); 
+f.style.display = 'none'; 
+this.parentNode.appendChild(f); 
+f.method = 'POST'; 
+f.action = this.href; 
+
+var v = document.createElement('input'); 
+v.setAttribute('type', 'hidden'); 
+v.setAttribute('name', 'id[]'); 
+v.setAttribute('value', '1114646077'); 
+f.appendChild(v); 
+
+
+var v2 = document.createElement('input'); 
+v2.setAttribute('type', 'hidden'); 
+v2.setAttribute('name', 'id[]'); 
+v2.setAttribute('value', '1114645461'); 
+f.appendChild(v2); 
+
+
+var r = document.createElement('input'); 
+r.setAttribute('type', 'hidden'); 
+r.setAttribute('name', 'return_to'); 
+r.setAttribute('value', 'back'); 
+f.appendChild(r); 
+f.submit(); 
+return false;
+">split-try from CFH</a>
+<br>

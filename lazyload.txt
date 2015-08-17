@@ -1,0 +1,14 @@
+<script src="jquery.lazyload.js"></script>
+
+
+<img class="lazy" data-original="img/example.jpg" width="640" height="480">
+
+
+
+$(function() {
+    $("img.lazy").lazyload({
+    threshold : 200;
+	effect : "fadeIn";
+});
+
+});

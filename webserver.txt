@@ -1,0 +1,7 @@
+console:
+
+cd\testserver
+
+http-server -p9000
+
+browse to: http://localhost:9000

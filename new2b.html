@@ -1,0 +1,55 @@
+<button class="product-button" href="http://memorialhelpers.com/cart/add" onclick="submitter('1114644849')">Send Order</button> 
+
+
+
+
+
+
+
+<script>
+//Shared submit code
+
+function presubmit(){
+//get the array of Variant Ids
+var x = [ '1114646077', '1114645461' ]; 
+}
+
+function submitter(variantId){
+var f = document.createElement('form'); 
+f.style.display = 'none'; 
+//this.parentNode.appendChild(f);
+f.id ='myform';
+f.action = "http://memorialhelpers.com/cart/add";  
+f.method = 'POST'; 
+
+//replace these with a loop for all variantIds sent in the array that is submitted to this function
+
+var v = document.createElement('input'); 
+v.setAttribute('type', 'hidden'); 
+v.setAttribute('name', 'id[]'); 
+v.setAttribute('value', '1114646077'); 
+f.appendChild(v); 
+
+
+//var v2 = document.createElement('input'); 
+v.setAttribute('type', 'hidden'); 
+v.setAttribute('name', 'id[]'); 
+v.setAttribute('value', '1114645461'); 
+f.appendChild(v); 
+
+//var v3 = document.createElement('input'); 
+v.setAttribute('type', 'hidden'); 
+v.setAttribute('name', 'id[]'); 
+v.setAttribute('value', '1114646077'); 
+f.appendChild(v); 
+
+
+//var r = document.createElement('input'); 
+//r.setAttribute('type', 'hidden'); 
+//r.setAttribute('name', 'return_to'); 
+//r.setAttribute('value', 'back'); 
+//f.appendChild(r); 
+f.submit(); 
+return false;
+}
+</script>

@@ -1,0 +1,82 @@
+
+/* classes for dragged stuff */
+.dragged1 {
+	position:absolute; 
+}
+
+.dragged2 {
+	position:absolute; 
+}
+
+.dragged3 {
+	position:absolute; 
+}
+
+.dragged4 {
+	position:absolute; 
+}
+
+.dragged5 {
+	position:absolute; 	
+}
+
+.dragged6 {
+	position:absolute; 
+}
+
+#trash {
+font-size: 200%;
+}
+
+h1 {  font-family: 'Tangerine', serif;
+font-family: 'Dancing Script', cursive;
+  font-size: 38px;
+  text-shadow: 3px 3px 3px #CCCCDE;
+  font-weight: 700;
+  font-style: italic;
+  color: #19196C;
+  margin-top: 5px;
+  display: inline;
+  }
+  
+  h4 {
+  display: inline;
+  }
+
+#frame {
+width:1200px;
+height:550px;
+padding:0;
+border:1px solid #aaaaaa; 
+margin: 0 auto;
+-webkit-box-shadow: 5px 5px 31px 1px rgba(0,0,0,0.75);
+-moz-box-shadow: 5px 5px 31px 1px rgba(0,0,0,0.75);
+box-shadow: 5px 5px 31px 1px rgba(0,0,0,0.75);
+
+border-radius: 4px 4px 4px 4px;
+-moz-border-radius: 4px 4px 4px 4px;
+-webkit-border-radius: 4px 4px 4px 4px;
+border: 0px solid #000000;
+}
+
+
+
+.margined{
+    margin:0 20px 0 20px;
+}
+
+
+.btn:active {
+background-image: none;
+outline: 0;
+-webkit-box-shadow: 0 0 8px #B1CBFC;
+box-shadow: 0 0 8px #B1CBFC;
+}
+
+
+.active {
+background-image: none;
+outline: 0;
+-webkit-box-shadow: 0 0 8px #B1CBFC;
+box-shadow: 0 0 8px #B1CBFC;
+}

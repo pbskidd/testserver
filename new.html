@@ -1,0 +1,37 @@
+<div class="product-panel">
+<div class="product-image">
+<img src="https://cdn.shopify.com/s/files/1/0790/8529/products/T240-2A_medium.jpeg?v=1425992751" alt="Buy Sacred Duty Spray">
+</div><div class="product-details">
+<h4 class="product_label">Sacred Duty Spray</h4>
+ <span class="product-price">$ 179.99</span><button class="product-button" onclick="submitter('1114644849')">Buy now</button> 
+</div>
+</div>
+
+
+
+
+
+<!--SHARED SUBMISSION FORM (HIDDEN)-->
+<form id='myform' action="http://memorialhelpers.com/cart/add" method="post">
+  <input type="hidden" id="id" name="id"/>
+  <script>
+  if (typeof sessionStorage.decName != "undefined")  //check if value stored
+  {document.write('<input type="hidden" name="attributes[deceased-name]" value="'+ sessionStorage.decName +'" />');} 
+  if (typeof sessionStorage.fhName != "undefined")  //check if value stored
+  {document.write('<input type="hidden" name="attributes[funeral-home]" value="'+ sessionStorage.fhName +'" />');} 
+  if (typeof sessionStorage.fhData != "undefined")  //check if value stored
+  {document.write('<input type="hidden" name="attributes[push-addr]" value="'+ sessionStorage.fhData +'" />');}   
+</script>
+</form>
+<!-- END SHARED FORM -->
+
+
+
+<script>
+//Shared submit code
+function submitter(variantId){
+var elem = document.getElementById("id");
+elem.value = variantId;
+document.forms["myform"].submit();
+}
+</script>

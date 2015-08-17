@@ -1,0 +1,51 @@
+<button class="product-button" href="http://memorialhelpers.com/cart/add" onclick="submitter('1114644849')">Send Order</button> 
+
+<button class="product-button" href="http://memorialhelpers.com/cart/add" onclick="presubmit()">Send Order</button> 
+
+
+<script>
+//Shared submit code
+
+function presubmit(){
+//get the array of Variant Ids (Shopify will tally repeat items properly)
+var x = [ '1114646077', '1114645461','1114646077', '1114645461','1114643705' ]; 
+submitter(x);
+}
+
+function submitter(variantIds){
+//process the array 
+ 
+var f = document.createElement('form'); 
+f.style.display = 'none'; 
+//this.parentNode.appendChild(f);
+f.id ='myform';
+f.action = "http://memorialhelpers.com/cart/add";  
+f.method = 'POST'; 
+ 
+ //need error catching if no items submitted (if-then)
+
+ var allIds = {};
+ 
+ for(i=0;i<variantIds.length;i++){   //loop through each variantId
+    //alert(variantIds[i])
+	
+	allIds["landmark" + i] = document.createElement('input');
+	allIds["landmark" + i].setAttribute('type', 'hidden'); 
+	allIds["landmark" + i].setAttribute('name', 'id[]'); 
+	allIds["landmark" + i].setAttribute('value', variantIds[i]); 
+	f.appendChild(allIds["landmark" + i]); 
+  }
+  
+  
+ // v.setAttribute('type', 'hidden'); 
+//v.setAttribute('name', 'id[]'); 
+//v.setAttribute('value', '1114646077'); 
+//f.appendChild(v); 
+  
+  
+  
+
+f.submit(); 
+return false;
+}
+</script>

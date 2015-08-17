@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<title>A Simple Draggable Element</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<style>
+.invoice tr td {
+border: 1px solid black;
+  background-color: #FFFFFF;
+  padding:5px 10px 5px;
+}
+
+.totalText {
+color: #00CC00;
+}
+
+.invoice {
+
+}
+
+.thumb{
+height: 75px;
+width: 75px;
+}
+
+.totalRow{
+font-weight: bold;
+}
+</style>
+
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> <!-- Required for accordion -->
+<script src="jquery.ui.touch-punch.min.js"></script> <!-- Required for iPad drag-drop-->
+<script src="jquery.doubletap.js"></script> <!-- Required for iPad doubletap-->
+<!--  <script src="assets/js/main.js"></script> <!-- put code here-->
+
+
+ <script type="text/javascript">
+ var totalCost = 0; 
+ var combinedMessage = '';
+
+//doubletap capture--very sensitive, triggers on drag-drop, map to same function as PC below
+$(document).ready(function() {
+  $('.dragImg').addSwipeEvents(function(evt, touch) {
+    if (touch.eventType = "doubletap"){
+	alert( "capture and show the item price, title and description here");
+	}
+  })
+ 
+
+//delete all?
+  $("#trash").click(function(){
+    $(".dragged2").remove();
+  });
+  
+});  //end-document ready
+
+
+$(function(){  
+    $("#dialog").dialog({
+    	autoOpen: false,
+    	buttons: {
+    		"Close": function(){
+    			$(this).dialog("close")
+    		}
+    	}
+    }); });
+
+
+$(function(){  
+
+ //Make every clone image unique.  
+   var counts = [0];
+    var resizeOpts = { 
+      handles: "all" ,autoHide:true
+    }; 
+	
+   $(".dragImg").draggable({
+                         helper: "clone",
+                         //Create counter
+                         start: function() { counts[0]++; },
+                        stop: handleDragStop   //catch trigger of a drop (only the first one)
+                        }
+						);
+
+
+						
+$("#frame").droppable({
+       drop: function(e, ui){
+               if(ui.draggable.hasClass("dragImg")) {
+     				$(this).append($(ui.helper).clone());
+
+					AddItem($("#frame .dragImg").attr('title'),$("#frame .dragImg").attr('sku'),$("#frame .dragImg").attr('price'),$("#frame .dragImg").attr('description'),$("#frame .dragImg").attr('src'));
+					
+					
+					Write2Bill();
+//define this variable locally to each drop
+var newMessage =  ui.draggable.attr('title') + " -- " + "$" + ui.draggable.attr('price');
+
+totalCost = totalCost + Number(ui.draggable.attr('price'));
+combinedMessage = combinedMessage + '\n' + newMessage;
+//alert( combinedMessage + '\n\n' + "Total Cost: $" + totalCost);
+
+$("#myDialogText").append('<p>'+ui.draggable.attr('description')+'</p>');
+$("#myDialogText").append('<br><p>Your Price: <strong>'+ui.draggable.attr('price')+'</strong></p>');
+$('#dialog').dialog('option', 'title', ui.draggable.attr('title'));
+//$("#dialog").dialog("open");
+
+
+   //Pointing to the dragImg class in frame and add new class so that can identify for later actions.
+         $("#frame .dragImg").addClass("item-"+counts[0]);
+         $("#frame .dragImg").addClass("dragged2");
+		 
+		 //resize the cloned image--would like to do this as soon as the drag begins instead of on drop.
+		 oldWidth= $("#frame .dragImg").attr('width');
+		 $("#frame .dragImg").css("width", (oldWidth*2.5));
+		
+		
+		
+            //$("#frame .img").addClass("imgSize-"+counts[0]);
+                
+   //Remove the current class (ui-draggable and dragImg)
+         $("#frame .item-"+counts[0]).removeClass("dragImg ui-draggable ui-draggable-dragging");
+
+
+//double click the clone to delete
+$(".item-"+counts[0]).dblclick(function() {
+
+
+//AddItem($("#frame .dragImg").attr('title'),$("#frame .dragImg").attr('sku'),$("#frame .dragImg").attr('price'),$("#frame .dragImg").attr('description'),$("#frame .dragImg").attr('src'));
+
+//get handle on what to remove from the array
+
+//alert ('DELETING '+ $(this).attr('title'));
+itemToDelete = $(this).attr('title');
+RemoveItem(itemToDelete); //run the array delete on the double-clicked pic's title
+$(this).remove(); //remove the double-clicked pic
+Write2Bill();
+});    
+
+make_draggable($(".item-"+counts[0]));
+	
+      $(".imgSize-"+counts[0]).resizable(resizeOpts);     
+       }  //end if 
+
+       }
+      });  //end droppable
+
+
+var zIndex = 0;
+function make_draggable(elements)
+{	
+	elements.draggable({
+		containment:'parent',
+		start:function(e,ui){ ui.helper.css('z-index',++zIndex); },
+		stop:function(e,ui){
+		}
+	});	
+}     
+   });
+
+   
+  function Write2Bill(){	
+    var billStringPrefix = "<table class='invoice'>";
+	billString =""; //necessary before the additive loops	
+    for (var i = 0; i < arrangements.length; i++) {   //loop through all items
+        billString = billString + "<tr><td rowspan='2'>" + "<img class='thumb' src='" + arrangements[i].image +"'"+ " alt='image of '"+ arrangements[i].item + ">" + "</td><td>" + arrangements[i].item + "</td><td>" + arrangements[i].sku + "</td><td>" + arrangements[i].price + "</td></tr><tr><td colspan='3'>" + arrangements[i].description + "</td></tr>"
+    }; //end for
+    totalString =GetTotal();
+    totalString = "<tr><td class='totalRow' colspan='5'>" + "Total: <span class='totalText'>" + totalString + "</span></td></tr>";
+	billString = billStringPrefix + billString + "</table>";
+	document.getElementById("checkout").innerHTML = billString;
+	document.getElementById("checkoutHeader").innerHTML = "Your Order " + totalString;
+} //end func WriteBill
+
+function AddItem(id, sku, price, description, image) {
+	//alert (image);
+    var numItems = arrangements.length;
+    arrangements[numItems] = {item:id, sku:sku, price:price, description:description, image:image};
+    //reporter();
+}//end func AddItem
+
+function RemoveItem(id) {
+    for (var i = 0; i < arrangements.length; i++) {   //loop through all items
+        //alert("item " + arrangements.length + " is " + arrangements[i].item);
+        if (arrangements[i].item === id) {   //if you find this id remove the item
+        //alert('clipping');
+            arrangements.splice(i,1);
+			
+			//NEED CODE THAT IF ARRAY IS EMPTY RE-ADD PLACEHOLDER TEXT
+            break;
+        } //end if
+    } //end for
+    //reporter();
+} //end func RemoveItem
+
+//USE THIS FOR STAGING PRESET COLLECTIONS --//First drop, record addition of item and record the drop xy location
+function handleDragStop( event, ui ) {
+  var offsetXPos = parseInt( ui.offset.left );
+  var offsetYPos = parseInt( ui.offset.top );
+  //alert( "Drag stopped!\n\nOffset: (" + offsetXPos + ", " + offsetYPos + ")\n");
+  
+};
+
+var arrangements = [];
+
+function reporter() {
+    alert ("array items " +arrangements.length);
+}//end func Reporter
+
+function GetTotal(){
+    //**********ERROR WONT RETURN PROMPT IF STILL ZERO
+    var Total = 0;
+    var curCost = 0;
+    for (var i = 0; i < arrangements.length; i++) {   //loop through all items
+            curCost = Number(arrangements[i].price);
+            //alert (curCost);
+            Total = Total + curCost;
+			Total =  Math.round(Total * 100) / 100;  //round to 2 decimal.
+    }; //end for
+    return Total;
+//alert ("Total Cost: " + Total);
+} //end func GetTotal
+
+ </script> 
+ 
+ <link rel="stylesheet" href="jquery-ui.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+	<link href='http://fonts.googleapis.com/css?family=Dancing+Script:700' rel='stylesheet' type='text/css'>
+	<link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+ <body style="padding:0; background-color: #849fcb; margin: 0 auto;">
+
+
+<!-- target "frame" -->
+  	<div id="frame" style="margin: 0 auto; background-image: url('img/casket-med.jpg'); "><h1>The Floral Arranger</h1>	<span class="pull-right"><a id="trash" ondrop="drop(event)" ondragover="allowDrop(event)" href="#" class="glyphicon glyphicon-refresh"></a></span> </div>
+
+
+
+ <div id="dialog" title="Dialog Title"><div id="myDialogText"></div></div>     
+ 
+<!--=== SORT ===-->
+    <div class="sorting-block margined" style="margin-top:5px;">
+			<button data-toggle="collapse" data-parent="#accordion"
+               href="#accordionOne" type="button" class="btn" Style="background-color: #8AB8E6; color: black;">CASKET SPRAYS 
+			</button>
+			<button data-toggle="collapse" data-parent="#accordion"
+               href="#accordionTwo" type="button" class="active btn" Style="background-color: #8AB8E6; color: black;">FUNERAL BOUQUETS
+			</button>
+			<button data-toggle="collapse" data-parent="#accordion"
+               href="#accordionThree" type="button" class="active btn" Style="background-color: #8AB8E6; color: black;">STANDING SPRAYS
+			</button>
+			<button data-toggle="collapse" data-parent="#accordion"
+               href="#accordionSeven" type="button" class="active btn" Style="background-color: #8AB8E6; color: black;">ACCESSORIES
+			</button>
+			<button data-toggle="collapse" data-parent="#accordion"
+               href="#accordionSeven" type="button" class="active btn" Style="background-color: #8AB8E6; color: black;"> ? 
+			</button>
+	
+
+
+
+
+
+
+
+
+
+
+
+<div class="panel-group" id="accordion">
+
+<!-- CASKET SPRAY -->
+      <div class="panel panel-primary"> <!-- START ACCORDION SECTION -->
+
+        <div id="accordionOne" class="panel-collapse collapse">
+          <div class="panel-body">
+            
+		<div class="row">
+
+
+<img id="drag2" class="dragImg pbGalImage" src="img/flowers/T271-3A.png" title="A Fond Farewell Casket Spray" sku="T271-3A" width="110" price = "279.99" alt = "(display image: A Fond Farewell Casket Spray)" type = "Casket Sprays" description = "Casket spray of orange roses and lilies and other brilliantly colored floral favorites. ">
+
+<img id="drag2" class="dragImg pbGalImage" src="img/flowers/T268-3A.png" title="Reflections of Gratitude Casket Spray" sku="T268-3A" width="117.5" price = "279.95" alt = "(display image: Reflections of Gratitude Casket Spray)" type = "Casket Sprays" description = "Lavender roses, purple alstroemeria and other favorites artistically arranged and placed on top of the casket.">
+
+<img id="drag2" class="dragImg pbGalImage" src="img/flowers/T267-4A.png" title="Garden of Sweet Memories Spray" sku="T267-4A" width="105" price = "354.95" alt = "(display image: Garden of Sweet Memories Spray)" type = "Casket Sprays" description = "Purple hydrangea, hot pink roses, peach spray roses, pink stargazer lilies, peach miniature gerberas, green gladioli, pink carnations, yellow snapdragons, lavender stock and solidago, accented with assorted greenery.">
+ 
+
+<div class="clearfix"></div>
+            
+
+		</div> <!-- END row -->
+		
+      </div> <!-- END panel body -->
+        </div> <!-- END collapse -->
+      </div> <!-- END ACCORDION SECTION -->
+	  
+<!-- BASKETS -->	  
+      <div class="panel panel-primary"> <!-- START ACCORDION SECTION -->
+
+        <div id="accordionTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+            
+		<div class="row">
+
+<img src="img/flowers/casket/CS-Rose.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+<img src="img/flowers/casket/T235-2A.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+<img src="img/flowers/casket/T229-3A.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+
+<div class="clearfix"></div>
+            
+
+
+		</div> <!-- END row -->
+		
+      </div> <!-- END panel body -->
+        </div> <!-- END collapse -->
+      </div> <!-- END ACCORDION SECTION -->	  
+	
+<!-- STANDING -->	  
+      <div class="panel panel-primary"> <!-- START ACCORDION SECTION -->
+        
+        <div id="accordionThree" class="panel-collapse collapse">
+          <div class="panel-body">
+            
+		<div class="row">
+
+<img src="img/flowers/casket/CS-Rose.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+<img src="img/flowers/casket/T235-2A.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+<img src="img/flowers/casket/T229-3A.png" id="drag2" class="drag pbGalImage" style="height:150px;">
+
+<div class="clearfix"></div>
+            
+
+
+		</div> <!-- END row -->
+		
+      </div> <!-- END panel body -->
+        </div> <!-- END collapse -->
+      </div> <!-- END ACCORDION SECTION -->	  
+	
+<!--<div style="margin:40px;"id="checkout">  -->	
+  
+    <div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" id="checkoutHeader" >Your Order</a>
+        </h4>
+      </div>
+      <div id="collapse2" class="panel-collapse collapse">
+        <div class="panel-body" id="checkout">No items have been added to your cart.</div>
+      </div>
+    </div>
+</div> 
+	
+	
+</div><!--/sorting block-->
+</div><!--/sorting block-->
+
+   
+  
+  </div>
+</div> <!--=== END CONTENT ===-->
+
+
+
+
+
+</body>
+<!--=== Bootstrap col class breaks clone (not v.1 clone though)===-->
+<!--=== not sure that going to use bootstrap theme (or even bootstrap)===-->
+</html>
